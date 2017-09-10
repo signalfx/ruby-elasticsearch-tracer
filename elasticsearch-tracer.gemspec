@@ -8,11 +8,13 @@ Gem::Specification.new do |spec|
   spec.version       = Elasticsearch::Tracer::VERSION
   spec.authors       = ["iaintshine"]
   spec.email         = ["bodziomista@gmail.com"]
+  spec.license       = "Apache-2.0"
 
   spec.summary       = %q{OpenTracing instrumentation for Ruby Elasticsearch client.}
   spec.description   = %q{}
   spec.homepage      = "https://github.com/iaintshine/ruby-elasticsearch-tracer"
 
+  spec.required_ruby_version = ">= 2.2.0"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
@@ -21,6 +23,11 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_dependency 'opentracing', '~> 0.3.1'
+  spec.add_dependency 'elasticsearch'
+
+  spec.add_development_dependency "test-tracer", "~> 1.0", ">= 1.2.1"
+  spec.add_development_dependency "tracing-matchers", "~> 1.0", ">= 1.3.0"
   spec.add_development_dependency "bundler", "~> 1.15"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
