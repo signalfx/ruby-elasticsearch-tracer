@@ -34,7 +34,7 @@ client.transport = Elasticsearch::Tracer::Transport.new(tracer: OpenTracing.glob
                                                         transport: client.transport)
 ```
 
-If you use `Elasticsearch::Client` with default `Faraday` transport you might want to use [`Faraday::Tracer` middleware](https://github.com/iaintshine/ruby-faraday-tracer) as shown below. It injects OT context, as `Elasticsearch::Tracer::Transport` does. It's a good idea to disable context propagation on the tracing transport.
+If you use `Elasticsearch::Client` with default `Faraday` transport you might want to use [`Faraday::Tracer` middleware](https://github.com/iaintshine/ruby-faraday-tracer) as shown below. It injects OT context.
 
 ```ruby
 require 'elasticsearch'
@@ -47,8 +47,7 @@ end
 
 client.transport = Elasticsearch::Tracer::Transport.new(tracer: OpenTracing.global_tracer,
                                                         active_span: -> { OpenTracing.global_tracer.active_span },
-                                                        transport: client.transport,
-                                                        inject: false)
+                                                        transport: client.transport)
 ```
 
 ## Configuration Options
@@ -56,7 +55,6 @@ client.transport = Elasticsearch::Tracer::Transport.new(tracer: OpenTracing.glob
 * `transport: Elasticsearch::Client.transport` the original transport.
 * `tracer: OpenTracing::Tracer` an OT compatible tracer. Default `OpenTracing.global_tracer`
 * `active_span: boolean` an active span provider. Default: `nil`.
-* `inject: boolean` whether to inject context. Default: `true`.
 
 ## Development
 
