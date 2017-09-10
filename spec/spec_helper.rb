@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "elasticsearch/tracer"
+require "elasticsearch-tracer"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
