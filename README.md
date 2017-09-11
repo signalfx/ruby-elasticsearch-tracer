@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/iaintshine/ruby-elasticsearch-tracer.svg?branch=master)](https://travis-ci.org/iaintshine/ruby-elasticsearch-tracer)
+
 # Elasticsearch::Tracer
 
 OpenTracing instrumentation for Ruby Elasticsearch client.
