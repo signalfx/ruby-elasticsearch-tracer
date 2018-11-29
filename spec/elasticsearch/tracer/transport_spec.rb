@@ -113,8 +113,8 @@ RSpec.describe Elasticsearch::Tracer::Transport do
       @custom_block = block
     end
 
-    def perform_request(method, path, params={}, body=nil)
-      @custom_block ? @custom_block.call(method, path, params, body) : SuccessfullResponse
+    def perform_request(method, path, params={}, body=nil, headers=nil)
+      @custom_block ? @custom_block.call(method, path, params, body, headers) : SuccessfullResponse
     end
   end
 end
