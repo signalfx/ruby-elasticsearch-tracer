@@ -3,13 +3,17 @@ module Elasticsearch
     class Transport
       attr_reader :tracer, :active_span, :wrapped
 
-      def initialize(tracer: OpenTracing.global_tracer, active_span: nil, transport:)
+      def initialize(tracer: OpenTracing.global_tracer, active_span: nil, transport:, db_statement_limit: nil)
         @tracer = tracer
         @active_span = active_span
         @wrapped = transport
+        @db_statement_limit = db_statement_limit
       end
 
       def perform_request(method, path, params={}, body=nil)
+        statement = MultiJson.dump(body)
+        statement = statement[0...@db_statement_limit] if @db_statement_limit
+
         span = tracer.start_span(method,
                                  child_of: active_span.respond_to?(:call) ? active_span.call : active_span,
                                  tags: {
@@ -18,7 +22,7 @@ module Elasticsearch
                                   'http.method' => method,
                                   'http.url' => path,
                                   'db.type' => 'elasticsearch',
-                                  'db.statement' => MultiJson.dump(body),
+                                  'db.statement' => statement,
                                   'elasticsearch.params' => URI.encode_www_form(params)
                                  })
 

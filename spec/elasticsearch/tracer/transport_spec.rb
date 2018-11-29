@@ -106,6 +106,29 @@ RSpec.describe Elasticsearch::Tracer::Transport do
     end
   end
 
+  describe "db statement truncation" do
+    let(:body) do
+      {query: {match_all: {}}}
+    end
+    let(:db_statement_limit) { 3 }
+
+    before do
+      debug_transport = DebugTransport.new
+      client = Elasticsearch::Client.new(transport: debug_transport)
+      client.transport = Elasticsearch::Tracer::Transport.new(tracer: tracer,
+                                                              transport: client.transport,
+                                                              db_statement_limit: db_statement_limit)
+      client.search(index: 'test_index', routing: 1, body: body)
+    end
+
+    it "truncates the statement string" do
+      statement = MultiJson.dump(body).to_str
+      truncated_body = statement[0...db_statement_limit]
+      expect(tracer).to have_span.with_tag('db.statement', truncated_body)
+    end
+
+  end
+
   class DebugTransport
     SuccessfullResponse = ::Elasticsearch::Transport::Transport::Response.new(200, "", {})
 
