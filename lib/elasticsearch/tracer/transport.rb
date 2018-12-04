@@ -9,7 +9,7 @@ module Elasticsearch
         @wrapped = transport
       end
 
-      def perform_request(method, path, params={}, body=nil)
+      def perform_request(method, path, params={}, body=nil, headers=nil)
         span = tracer.start_span(method,
                                  child_of: active_span.respond_to?(:call) ? active_span.call : active_span,
                                  tags: {
@@ -22,7 +22,7 @@ module Elasticsearch
                                   'elasticsearch.params' => URI.encode_www_form(params)
                                  })
 
-        response = @wrapped.perform_request(method, path, params, body)
+        response = @wrapped.perform_request(method, path, params, body, headers)
         span.set_tag('http.status_code', response.status)
 
         response
