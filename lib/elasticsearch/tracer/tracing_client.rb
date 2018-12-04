@@ -15,10 +15,10 @@ module Elasticsearch
 
       def index(arguments = {})
         # trace this request without tagging the request body
-        @transport.tag_body = false
+        Thread.current[:skip_body] = true
         super
       ensure
-        @transport.tag_body = true
+        Thread.current[:skip_body] = nil
       end
     end
   end

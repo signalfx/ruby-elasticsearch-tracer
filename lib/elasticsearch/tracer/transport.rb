@@ -3,13 +3,10 @@ module Elasticsearch
     class Transport
       attr_reader :tracer, :active_span, :wrapped
 
-      attr_accessor :tag_body
-
       def initialize(tracer: OpenTracing.global_tracer, active_span: nil, transport:)
         @tracer = tracer
         @active_span = active_span
         @wrapped = transport
-        @tag_body = true
       end
 
       def perform_request(method, path, params={}, body=nil, headers=nil)
@@ -22,7 +19,7 @@ module Elasticsearch
           'elasticsearch.params' => URI.encode_www_form(params)
         }
 
-        tags['db.statement'] = MultiJson.dump(body) if @tag_body
+        tags['db.statement'] = MultiJson.dump(body) unless Thread.current[:skip_body]
 
         span = tracer.start_span(method,
                                  child_of: active_span.respond_to?(:call) ? active_span.call : active_span,
