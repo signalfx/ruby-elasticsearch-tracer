@@ -19,7 +19,7 @@ module Elasticsearch
           'elasticsearch.params' => URI.encode_www_form(params)
         }
 
-        tags['db.statement'] = MultiJson.dump(body) unless Thread.current[:skip_body]
+        tags['db.statement'] = MultiJson.dump(body) unless Thread.current[self.object_id.to_s]
 
         span = tracer.start_span(method,
                                  child_of: active_span.respond_to?(:call) ? active_span.call : active_span,
