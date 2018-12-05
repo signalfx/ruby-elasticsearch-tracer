@@ -10,17 +10,20 @@ module Elasticsearch
       end
 
       def perform_request(method, path, params={}, body=nil, headers=nil)
+        tags = {
+          'component' => 'elasticsearch-ruby',
+          'span.kind' => 'client',
+          'http.method' => method,
+          'http.url' => path,
+          'db.type' => 'elasticsearch',
+          'elasticsearch.params' => URI.encode_www_form(params)
+        }
+
+        tags['db.statement'] = MultiJson.dump(body) unless Thread.current[self.object_id.to_s]
+
         span = tracer.start_span(method,
                                  child_of: active_span.respond_to?(:call) ? active_span.call : active_span,
-                                 tags: {
-                                  'component' => 'elasticsearch-ruby',
-                                  'span.kind' => 'client',
-                                  'http.method' => method,
-                                  'http.url' => path,
-                                  'db.type' => 'elasticsearch',
-                                  'db.statement' => MultiJson.dump(body),
-                                  'elasticsearch.params' => URI.encode_www_form(params)
-                                 })
+                                 tags: tags)
 
         response = @wrapped.perform_request(method, path, params, body, headers)
         span.set_tag('http.status_code', response.status)

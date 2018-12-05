@@ -2,6 +2,7 @@ require 'elasticsearch'
 
 require "elasticsearch/tracer/version"
 require "elasticsearch/tracer/transport"
+require "elasticsearch/tracer/tracing_client"
 
 module Elasticsearch
   module Tracer
