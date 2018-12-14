@@ -4,15 +4,15 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "elasticsearch/tracer/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "elasticsearch-tracer"
+  spec.name          = "signalfx-elasticsearch-instrumentation"
   spec.version       = Elasticsearch::Tracer::VERSION
   spec.authors       = ["iaintshine"]
   spec.email         = ["bodziomista@gmail.com"]
   spec.license       = "Apache-2.0"
 
-  spec.summary       = %q{OpenTracing instrumentation for Ruby Elasticsearch client.}
+  spec.summary       = %q{Fork of ruby-elasticsearch-tracer. OpenTracing instrumentation for Ruby Elasticsearch client.}
   spec.description   = %q{}
-  spec.homepage      = "https://github.com/iaintshine/ruby-elasticsearch-tracer"
+  spec.homepage      = "https://github.com/signalfx/ruby-elasticsearch-tracer"
 
   spec.required_ruby_version = ">= 2.2.0"
 
@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'opentracing', '~> 0.3.1'
+  spec.add_dependency 'opentracing', '> 0.3.1'
   spec.add_dependency 'elasticsearch'
 
   spec.add_development_dependency "test-tracer", "~> 1.0", ">= 1.2.1"

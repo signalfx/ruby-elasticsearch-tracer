@@ -9,7 +9,7 @@ OpenTracing instrumentation for Ruby Elasticsearch client.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'elasticsearch-tracer'
+gem 'signalfx-elasticsearch-instrumentation'
 ```
 
 And then execute:
@@ -18,7 +18,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install elasticsearch-tracer
+    $ gem install signalfx-elasticsearch-instrumentation
 
 ## Usage
 
