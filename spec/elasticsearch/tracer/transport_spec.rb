@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe Elasticsearch::Tracer::Transport do
-  let(:tracer) { Test::Tracer.new }
+  let(:tracer) { OpenTracingTestTracer.build }
 
   describe "active span propagation" do
     let(:root_span) { tracer.start_span("root") }
@@ -20,7 +20,8 @@ RSpec.describe Elasticsearch::Tracer::Transport do
     end
 
     it "creates the new span with active span as a parent" do
-      elasticsearch_span = tracer.finished_spans.last
+      # elasticsearch_span = tracer.finished_spans.last
+      elasticsearch_span = tracer.spans.last
       expect(elasticsearch_span).to be_child_of(root_span)
     end
   end
@@ -43,7 +44,7 @@ RSpec.describe Elasticsearch::Tracer::Transport do
     end
 
     it "sets operation_name to HTTP method name" do
-      expect(tracer).to have_span("GET")
+      expect(tracer).to have_span("POST")
     end
 
     it "sets standard OT tags" do
@@ -57,7 +58,7 @@ RSpec.describe Elasticsearch::Tracer::Transport do
 
     it "sets standard HTTP OT tags" do
       [
-        ['http.method', 'GET'],
+        ['http.method', 'POST'],
         ['http.url', 'test_index/_search'],
         ['http.status_code', 200],
       ].each do |key, value|
@@ -101,7 +102,9 @@ RSpec.describe Elasticsearch::Tracer::Transport do
 
     it "logs error event" do
       expect { @client.search(q: 'test') }.to raise_error do |_|
-        expect(tracer).to have_span.with_log(event: 'error', :'error.object' => error)
+        expect(tracer).to have_span.with_tag('error', true)
+        expect(tracer).to have_span.with_tag('sfx.error.kind', error.class.to_s)
+        expect(tracer).to have_span.with_tag('sfx.error.message', error.to_s)
       end
     end
   end

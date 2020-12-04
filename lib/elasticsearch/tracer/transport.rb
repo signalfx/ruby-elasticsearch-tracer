@@ -31,8 +31,7 @@ module Elasticsearch
         response
       rescue Exception => e
         if span
-          span.set_tag('error', true)
-          span.log(event: 'error', :'error.object' => e)
+          span.record_exception(e)
         end
         raise
       ensure

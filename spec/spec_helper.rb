@@ -2,6 +2,7 @@ require "bundler/setup"
 require "tracing-matchers"
 require "elasticsearch-tracer"
 require "pry"
+require "signalfx_test_tracer" 
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
